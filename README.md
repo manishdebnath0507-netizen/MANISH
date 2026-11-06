@@ -3,7 +3,7 @@
 A private trading analytics and research platform. This is a separate product and repository from ONE SPACE.
 
 ## Product scope
-- MT5 history synchronization through a local, read-only Windows connector.
+- Read-only Windows MT5 history collector (local JSON export stage complete; secure cloud upload pending).
 - Trade journal with order/deal reconciliation, partial closes, commissions, swaps and timestamps.
 - Performance analytics: win rate, net P/L, profit factor, expectancy, drawdown, time-of-day, weekday and monthly breakdowns.
 - Multi-asset market workspace.
@@ -33,7 +33,7 @@ The initial 12-table schema is documented in `supabase/schema.sql`. All tables h
 ## Development sequence
 1. Complete Auth URL setup and test sign-in.
 2. Implement the authenticated backend and secure connector enrollment.
-3. Implement the read-only MT5 Windows connector and reconcile broker deals.
+3. Complete secure MT5 connector enrollment/upload and reconcile broker deals.
 4. Build analytics from real trades.
 5. Add licensed market data and economic events.
 6. Build and validate the backtesting engine.
