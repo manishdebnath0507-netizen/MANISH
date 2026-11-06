@@ -8,6 +8,9 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import os
+import urllib.error
+import urllib.request
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
@@ -108,7 +111,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             raise RuntimeError(f"MT5 account information unavailable ({code}): {message}")
 
         end = datetime.fromisoformat(args.to).replace(tzinfo=timezone.utc) if args.to else datetime.now(timezone.utc)
-        start = datetime.fromisoformat(args.from_date).replace(tzinfo=timezone.utc) if args.from_date else end - timedelta(days=365)
+        start = datetime.fromisoformat(args.from_date).replace(tzinfo=timezone.utc) if args.from_date else datetime(2000, 1, 1, tzinfo=timezone.utc)
         if start >= end:
             raise ValueError("The --from date must be earlier than --to.")
 
@@ -160,6 +163,7 @@ def main() -> int:
     parser.add_argument("--to", help="UTC date/time; defaults to current UTC time")
     parser.add_argument("--output", default="ati-mt5-export.json", help="Output JSON file")
     parser.add_argument("--terminal-path", help="Optional path to terminal64.exe")
+    parser.add_argument("--sync", action="store_true", help="Upload this read-only export to your enrolled AI Trading Intelligence account")
     args = parser.parse_args()
 
     try:
@@ -169,6 +173,25 @@ def main() -> int:
         print(f"Export complete: {output}")
         print(f"Deals: {payload['counts']['deals']} | Open positions: {payload['counts']['open_positions']}")
         print("Read-only export. No MT5 password was requested or stored.")
+        if args.sync:
+            token = os.environ.get("ATI_CONNECTOR_TOKEN", "").strip()
+            if not token:
+                raise RuntimeError("Set ATI_CONNECTOR_TOKEN in your Windows environment before using --sync.")
+            api_url = os.environ.get("ATI_API_URL", "https://ai-trading-intelligence-api.vercel.app").rstrip("/")
+            request = urllib.request.Request(
+                api_url + "/connector/sync",
+                data=json.dumps(payload, ensure_ascii=False).encode("utf-8"),
+                headers={"Authorization": "Bearer " + token, "Content-Type": "application/json"},
+                method="POST",
+            )
+            try:
+                with urllib.request.urlopen(request, timeout=120) as response:
+                    result = json.loads(response.read().decode("utf-8"))
+            except urllib.error.HTTPError as error:
+                detail = error.read().decode("utf-8", errors="replace")[:500]
+                raise RuntimeError(f"Cloud sync rejected ({error.code}): {detail}") from error
+            print("Cloud sync complete:")
+            print(json.dumps(result, indent=2))
         return 0
     except Exception as exc:
         print(f"Connector error: {exc}", file=sys.stderr)
