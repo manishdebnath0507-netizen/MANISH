@@ -57,3 +57,13 @@ Last updated: 2026-11-06
 - Revoke endpoint now verifies that a row owned by the signed-in user was actually updated; unknown or foreign connection IDs return 404.
 - The browser keeps the one-time token display behavior; the raw connector token is never persisted in the database or shown again after refresh.
 - These changes are committed to the separate MANISH repository. Live deployment build and end-to-end browser verification are pending.
+
+
+## 2026-11-06 UI redesign
+- Replaced the plain prototype layout with a full dark, premium trading workspace design: branded sidebar, active navigation, compact top bar, responsive cards, performance snapshot, equity-curve illustration, next-step panel, and trading toolkit.
+- Reworked all workspace pages: journal, analytics, markets, event intelligence, backtesting, strategies, AI assistant, and settings.
+- Added a redesigned sign-in/sign-up screen, clear prototype-data notice, read-only MT5 safety messaging, and device-management presentation.
+- Added responsive tablet/mobile navigation, including a persistent mobile Settings entry.
+- Preserved the existing Supabase authentication, private trade loading, CSV export, analytics API, MT5 enrollment, token copy, connected-device listing and revoke actions.
+- Updated tab handling so sidebar navigation remains in sync when a user opens a page through a dashboard shortcut.
+- UI changes are committed on `main`. Vercel's deployment API rejected a manual production redeploy with HTTP 402 because the team hit its daily deployment API limit; the existing production deployment remains the prior build until Vercel accepts a new build. No claim is made that this redesign is already live.
