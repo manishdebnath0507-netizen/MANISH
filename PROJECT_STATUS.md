@@ -48,3 +48,12 @@ Last updated: 2026-11-06
 - The MT5 sync RPC is intentionally executable by the anon role only because the local device has no Supabase user session; every call must present its high-entropy device token, and the RPC validates the hash before writing. Supabase flags this SECURITY DEFINER pattern for manual review.
 - Local connector exports contain account identifiers and trading history; store them privately.
 - Scheduled synchronization depends on the user's Windows PC, MT5 terminal and internet connection being available.
+
+
+## 2026-11-06 follow-up hardening
+- Tightened the database read-only mode guard with `IS DISTINCT FROM`, so a missing/null mode is rejected even when the RPC is called directly.
+- Added authenticated `GET /connector/connections` endpoint. It returns only safe device metadata and never returns connector token hashes.
+- Added persistent connected-device list in Settings with enrollment time, last successful sync time, active/revoked state, and revoke action.
+- Revoke endpoint now verifies that a row owned by the signed-in user was actually updated; unknown or foreign connection IDs return 404.
+- The browser keeps the one-time token display behavior; the raw connector token is never persisted in the database or shown again after refresh.
+- These changes are committed to the separate MANISH repository. Live deployment build and end-to-end browser verification are pending.
