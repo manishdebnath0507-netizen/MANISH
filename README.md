@@ -1,41 +1,42 @@
 # AI Trading Intelligence
 
-A private, personal trading analytics and research platform. This repository is separate from ONE SPACE.
+A private trading analytics and research platform. This is a separate product and repository from ONE SPACE.
 
 ## Product scope
-- MT5 trade history synchronization through a local, read-only Windows connector.
+- MT5 history synchronization through a local, read-only Windows connector.
 - Trade journal with order/deal reconciliation, partial closes, commissions, swaps and timestamps.
 - Performance analytics: win rate, net P/L, profit factor, expectancy, drawdown, time-of-day, weekday and monthly breakdowns.
-- Market workspace for multiple asset classes.
+- Multi-asset market workspace.
 - Economic calendar and event-impact research with source timestamps.
 - Strategy library and realistic historical backtesting.
-- AI assistant that analyses the user's own verified records and clearly separates facts from hypotheses.
+- AI assistant that analyses verified records and distinguishes facts from hypotheses.
 
-## Security principles
-- Never request or store the user's MT5 trading password.
-- Start with read-only broker access; no order placement or modification.
-- Keep broker connector credentials server-side, scoped and rotatable.
-- Enforce per-user database access with Row Level Security.
-- Never present sample data, stale quotes or generated analysis as live facts.
-
-## Current status
-The initial UI prototype is a design scaffold only. MT5, live data, authentication, database persistence, AI analysis and backtesting are not yet production-connected. See PROJECT_STATUS.md.
+## Current deployment
+- Frontend: Vercel project `ai-trading-intelligence`, root directory `frontend`.
+- Database and Auth: dedicated Supabase project in Mumbai (`ap-south-1`).
+- Production domain: https://ai-trading-intelligence-one-space4.vercel.app
+- Git repository: https://github.com/manishdebnath0507-netizen/MANISH
 
 ## Local preview
-Open `frontend/index.html` in a modern browser. The initial interface uses clearly labelled illustrative data.
+Open `frontend/index.html` in a modern browser. The UI uses demo records until actual MT5 records are synchronized.
 
-## Architecture direction
-- Frontend: responsive web application.
-- Backend: FastAPI services for connector enrollment, sync and analytics.
-- Database/auth: a dedicated Supabase project, separate from ONE SPACE.
-- MT5: Windows-side read-only connector using the authenticated MetaTrader 5 terminal.
-- Deployment: Vercel for the web application; backend/connector deployment selected after integration tests.
+## Database
+The initial 12-table schema is documented in `supabase/schema.sql`. All tables have RLS enabled; anonymous access is revoked and authenticated access is scoped by `auth.uid()`.
+
+## Security
+- Only the Supabase publishable key is used in the browser; it is safe to expose when RLS is enabled.
+- Never expose a Supabase secret/service-role key in frontend code.
+- Never request or store an MT5 trading password.
+- MT5 connector will read from the already authenticated local MT5 terminal and will not place, modify or close orders.
+- Connector credentials must be hashed at rest, scoped, revocable and rotated.
 
 ## Development sequence
-1. Repository and architecture foundation.
-2. Authentication, database schema and RLS.
-3. Secure local MT5 connector and trade/deal reconciliation.
-4. Verified analytics and journal.
-5. Market data and economic calendar integrations.
-6. Backtesting engine with spread, fees, slippage and no look-ahead bias.
-7. AI analysis, tests, security review and deployment.
+1. Complete Auth URL setup and test sign-in.
+2. Implement the authenticated backend and secure connector enrollment.
+3. Implement the read-only MT5 Windows connector and reconcile broker deals.
+4. Build analytics from real trades.
+5. Add licensed market data and economic events.
+6. Build and validate the backtesting engine.
+7. Add grounded AI analysis, monitoring and end-to-end security tests.
+
+See `PROJECT_STATUS.md` for completed and pending work. Demo values are fictional and not evidence of trading performance.
