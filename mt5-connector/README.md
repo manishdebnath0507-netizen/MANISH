@@ -35,9 +35,12 @@ python connector.py --output ati-mt5-export.json
 python connector.py --sync
 ```
 
-By default, the export requests history from 1 January 2000 through the current
-UTC time, subject to the history available in the broker terminal. Use --from
-and --to to narrow the date range when necessary.
+For a first sync, the connector requests history from 1 January 2000 through
+the current UTC time, subject to the history available in the broker terminal.
+After a successful cloud sync, a local checkpoint is saved. Later scheduled
+runs re-read a two-day overlap window and rely on broker deal-ticket
+idempotency to avoid duplicates. Use --from and --to to narrow a first import
+when the broker account has a very large history.
 
 ## Reconciliation
 - Broker deal tickets are synchronized idempotently.
