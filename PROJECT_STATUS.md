@@ -32,7 +32,7 @@ Last updated: 2026-11-06
 - [ ] Enroll and test the connector on the user's Windows computer with MT5 open and signed in.
 - [ ] Validate reconciliation against broker-specific examples, including netting reversals, commission-only deals and partial closes.
 - [ ] Add UI to list all connected devices and revoke an existing connector after page refresh.
-- [ ] Add pagination/incremental sync checkpoints to reduce large full-history uploads.
+- [x] Local incremental sync checkpoint added with a two-day overlap window; broker deal-ticket upserts prevent duplicate records.
 - [ ] Build detailed weekday, monthly, session, symbol and strategy analytics.
 - [ ] Integrate licensed market prices and economic calendar data.
 - [ ] Build realistic backtesting with bid/ask, spread, commission, slippage and no look-ahead bias.
