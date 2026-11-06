@@ -2,3 +2,13 @@ body{margin:0;background:#0a0f19;color:#e7edf7;font:14px Arial;display:flex}asid
 .auth-gate{position:fixed;inset:0;z-index:20;background:rgba(7,12,22,.97);display:grid;place-items:center;padding:20px}.auth-gate.hidden{display:none}.auth-card{width:min(100%,420px);background:#121c2c;border:1px solid #30415d;border-radius:14px;padding:30px;box-shadow:0 24px 80px #0008}.auth-brand{font-weight:800;letter-spacing:2px;font-size:18px}.auth-brand span{display:block;color:#8d9bb1;font-size:10px;margin-top:5px}.auth-card .eyebrow{margin:28px 0 8px}.auth-card h1{font-size:26px}.auth-card label{display:block;font-size:11px;margin:18px 0 7px}.auth-card input{display:block;width:100%;box-sizing:border-box;margin:0;padding:13px;background:#0b1422;border:1px solid #354662;border-radius:7px;color:#fff}.auth-submit{width:100%;margin-top:22px;background:#b7cbff;color:#101827;border:0;border-radius:7px;padding:13px;font-weight:800;text-align:center}.auth-switch{width:100%;margin-top:14px;background:transparent;text-align:center;border:0;color:#b7cbff}.auth-message{font-size:12px;line-height:1.5;color:#e8c77f;min-height:18px}.user-email{color:#9cabc0;font-size:10px}.signout{font-size:10px;padding:7px 10px;background:transparent}@media(max-width:700px){.auth-card{padding:22px}.user-email{display:none}}
 
 .hidden{display:none!important}textarea{width:100%;box-sizing:border-box;background:#0b1422;border:1px solid #354662;color:#fff;border-radius:7px;padding:12px}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#0b1422;padding:12px;border-radius:7px;color:#b7cbff;font-size:11px}#mt5TokenPanel{margin-top:18px;border-top:1px solid #30415e;padding-top:16px}
+
+
+.connector-list{display:grid;gap:12px;margin-top:14px}
+.connector-device{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:16px;border:1px solid var(--line,#29313d);border-radius:12px;background:rgba(255,255,255,.025)}
+.connector-device p{margin:6px 0 0}
+.connector-state{display:inline-flex;margin-left:10px;padding:4px 9px;border-radius:999px;font-size:11px;background:rgba(220,80,80,.12);color:#e28b8b}
+.connector-state.is-active{background:rgba(48,180,120,.12);color:#65c99a}
+.revoke-device{border:1px solid rgba(220,80,80,.45);color:#e28b8b;background:transparent;padding:8px 12px;border-radius:8px;cursor:pointer}
+.revoke-device:disabled{opacity:.5;cursor:wait}
+@media(max-width:640px){.connector-device{align-items:flex-start;flex-direction:column}}
