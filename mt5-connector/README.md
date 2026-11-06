@@ -50,3 +50,23 @@ and --to to narrow the date range when necessary.
 - Execution timestamps are normalized to UTC.
 
 The connector reads only. It never sends a trading instruction to MT5.
+
+## Optional automatic synchronization
+
+After a successful manual sync, you can schedule the connector every 15 minutes:
+
+```powershell
+Set-ExecutionPolicy -Scope Process Bypass
+.\install_auto_sync.ps1
+```
+
+The scheduled task runs as your Windows user while you are signed in. Keep MT5
+open and logged in. To stop the scheduled sync:
+
+```powershell
+.\remove_auto_sync.ps1
+```
+
+You can still run `python connector.py --sync` manually at any time. Automatic
+sync is not a hosted cloud process; it depends on your Windows computer, MT5
+terminal and internet connection being available.
