@@ -1,23 +1,25 @@
-# MT5 local connector (read-only)
+# MT5 connector (read-only)
 
-This Windows helper reads trade history from an MT5 desktop terminal that you
-have already logged into. It exports a normalized JSON file for the AI Trading
-Intelligence import pipeline.
+This Windows helper reads an MT5 terminal that you have already logged into.
+It can export a local JSON file or upload history to your enrolled AI Trading
+Intelligence account.
 
 ## Safety
+- Sign in to your broker inside the official MT5 desktop terminal.
+- Never enter your MT5 password into this connector, ChatGPT, or the website.
+- The connector cannot place, modify, or close trades.
+- The server stores only a hash of the connector credential.
+- Keep credentials and exported account history private.
 
-- Never enter your MT5 password into this connector or into ChatGPT.
-- Log in to your broker inside the official MT5 desktop terminal yourself.
-- The connector calls only account/history/position read functions.
-- It does not contain order placement, order modification, close-position, or
-  account-login code.
-- Keep exported JSON private: it contains account identifiers and trading data.
+## Enroll
+1. Sign in to AI Trading Intelligence.
+2. Open Settings and choose **Create secure connector**.
+3. Copy the one-time credential and save it securely.
+4. Set it as the Windows user environment variable named ATI_CONNECTOR_TOKEN.
+5. Close and reopen PowerShell.
 
 ## Install
-
-1. Install the MT5 desktop terminal and sign in normally.
-2. Install Python 3.10+ on the same Windows computer.
-3. Open PowerShell in this folder and run:
+Install Python 3.10+ and the MT5 desktop terminal. Sign in to MT5, then run:
 
 ```powershell
 py -m venv .venv
@@ -26,34 +28,25 @@ py -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-## Export one year of history
-
-Keep MT5 open and logged in, then run:
+## Export and sync
 
 ```powershell
 python connector.py --output ati-mt5-export.json
+python connector.py --sync
 ```
 
-Choose an explicit date range (UTC):
+By default, the export requests history from 1 January 2000 through the current
+UTC time, subject to the history available in the broker terminal. Use --from
+and --to to narrow the date range when necessary.
 
-```powershell
-python connector.py --from 2025-01-01T00:00:00 --to 2026-01-01T00:00:00 --output ati-history.json
-```
+## Reconciliation
+- Broker deal tickets are synchronized idempotently.
+- Entry and exit deals are grouped by position identifier.
+- Partial closes are accumulated before a position is marked closed.
+- Realized P/L includes profit, commission, swap and fees.
+- Open positions retain current price and floating P/L separately.
+- Netting reversal (INOUT) positions remain in the raw deal ledger for review
+  rather than being guessed into a potentially incorrect trade.
+- Execution timestamps are normalized to UTC.
 
-If multiple terminals are installed, pass the terminal executable path:
-
-```powershell
-python connector.py --terminal-path "C:\Program Files\MetaTrader 5\terminal64.exe"
-```
-
-The export includes account metadata, historical deals, open positions, UTC
-timestamps, commissions, swaps, fees, and broker deal/order/position identifiers.
-It preserves deal-level facts; server-side reconciliation will group entry and
-exit deals into positions, including partial closes.
-
-## Current limitation
-
-This first connector stage exports locally only. It does not upload data or
-enroll a device yet. The authenticated upload endpoint and revocable connector
-enrollment must be completed before exported data is imported into the cloud
-journal.
+The connector reads only. It never sends a trading instruction to MT5.
