@@ -46,7 +46,7 @@ begin
     raise exception 'Invalid connector credential' using errcode = '28000';
   end if;
   if p_payload is null or jsonb_typeof(p_payload) <> 'object'
-     or p_payload->>'mode' <> 'read_only' then
+     or p_payload->>'mode' IS DISTINCT FROM 'read_only' then
     raise exception 'Invalid read-only connector payload' using errcode = '22023';
   end if;
   if jsonb_typeof(p_payload->'deals') <> 'array'
