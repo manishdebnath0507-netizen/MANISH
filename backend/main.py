@@ -6,19 +6,22 @@ from zoneinfo import ZoneInfo
 import httpx
 from fastapi import FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from connector import router as connector_router
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://kgtypwftbxlnxcxkbqdw.supabase.co").rstrip("/")
 SUPABASE_PUBLISHABLE_KEY = os.environ.get("SUPABASE_PUBLISHABLE_KEY", "")
 APP_ORIGIN = "https://ai-trading-intelligence-one-space4.vercel.app"
 
-app = FastAPI(title="AI Trading Intelligence API", version="0.2.0")
+app = FastAPI(title="AI Trading Intelligence API", version="0.3.0")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[APP_ORIGIN],
     allow_credentials=True,
-    allow_methods=["GET", "OPTIONS"],
+    allow_methods=["GET", "POST", "PATCH", "OPTIONS"],
     allow_headers=["Authorization", "Content-Type", "apikey", "X-Timezone"],
 )
+
+app.include_router(connector_router)
 
 async def get_user_trades(authorization: str | None):
     if not authorization or not authorization.lower().startswith("bearer "):
