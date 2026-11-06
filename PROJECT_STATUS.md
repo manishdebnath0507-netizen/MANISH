@@ -17,8 +17,8 @@ Last updated: 2026-11-06
 
 ## Pending implementation and verification
 - [ ] Set Supabase Auth Site URL and allowed redirect URL to the production domain (dashboard setting not exposed by current integration).
-- [ ] Test real sign-up, email confirmation, sign-in and sign-out end to end.
-- [ ] Add server-side backend API with verified user JWTs and scoped connector enrollment.
+- [ ] Set Supabase Auth Site URL and allowed redirect URL to the production domain (dashboard setting not exposed by current integration).\n- [ ] Test real sign-up, email confirmation, sign-in and sign-out end to end.
+- [x] Deploy FastAPI backend with user JWT verification through Supabase Auth; analytics endpoints use the user's JWT and RLS (no service-role key).\n- [ ] Add scoped MT5 connector enrollment and device-token lifecycle.
 - [ ] Implement Windows MT5 read-only connector; test with an authenticated local terminal.
 - [ ] Reconcile MT5 orders, deals, partial closes, fees, swaps and broker/server timezones.
 - [ ] Build calculated performance analytics from verified deals.
