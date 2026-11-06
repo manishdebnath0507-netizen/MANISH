@@ -125,6 +125,25 @@ async def sync(request: Request, authorization: str | None = Header(default=None
     return response.json()
 
 
+@router.get("/connections")
+async def list_connections(authorization: str | None = Header(default=None)):
+    await identify_user(authorization)
+    headers = {"apikey": SUPABASE_KEY, "Authorization": authorization}
+    params = {
+        "select": "id,device_label,connector_version,status,enrolled_at,last_seen_at,revoked_at,trading_account_id",
+        "order": "enrolled_at.desc",
+    }
+    async with httpx.AsyncClient(timeout=20) as client:
+        response = await client.get(
+            f"{SUPABASE_URL}/rest/v1/mt5_connections",
+            headers=headers,
+            params=params,
+        )
+    if response.status_code != 200:
+        raise HTTPException(status_code=502, detail="Could not load your MT5 connectors.")
+    return {"connections": response.json()}
+
+
 @router.post("/revoke/{connection_id}")
 async def revoke(connection_id: str, authorization: str | None = Header(default=None)):
     await identify_user(authorization)
@@ -138,9 +157,12 @@ async def revoke(connection_id: str, authorization: str | None = Header(default=
         response = await client.patch(
             f"{SUPABASE_URL}/rest/v1/mt5_connections",
             headers=headers,
-            params={"id": f"eq.{connection_id}"},
+            params={"id": f"eq.{connection_id}", "select": "id"},
             json={"status": "revoked", "revoked_at": datetime.utcnow().isoformat() + "Z"},
         )
     if response.status_code not in (200, 204):
         raise HTTPException(status_code=502, detail="Could not revoke the connector.")
+    rows = response.json() if response.content else []
+    if not rows:
+        raise HTTPException(status_code=404, detail="Connector not found or not owned by this account.")
     return {"status": "revoked", "connection_id": connection_id}
