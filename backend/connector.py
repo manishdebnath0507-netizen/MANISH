@@ -110,7 +110,6 @@ async def sync(request: Request, authorization: str | None = Header(default=None
         raise HTTPException(status_code=503, detail="API configuration is incomplete.")
     headers = {
         "apikey": SUPABASE_KEY,
-        "Authorization": f"Bearer {SUPABASE_KEY}",
         "Content-Type": "application/json",
     }
     async with httpx.AsyncClient(timeout=90) as client:
