@@ -9,7 +9,7 @@ Last updated: 2026-11-06
 - [x] Initial 12-table schema; RLS enabled on all 12 application tables.
 - [x] Anonymous direct table access revoked; authenticated rows scoped by auth.uid().
 - [x] Composite ownership constraints prevent cross-user account/trade/strategy/backtest references.
-- [x] Supabase security advisor check returned no findings.
+- [x] Supabase security advisor checked; one intentional warning remains for the token-guarded SECURITY DEFINER sync RPC callable by anon. The function verifies a high-entropy per-device token hash, uses a fixed search_path, and is the only anonymous write path.
 - [x] Supabase canonical schema snapshot and ownership-hardening migration documented.
 - [x] Authenticated frontend sign-up/sign-in and per-user trade journal wiring.
 - [x] FastAPI verifies Supabase user sessions and reads analytics under the user's RLS context.
@@ -45,5 +45,6 @@ Last updated: 2026-11-06
 - Never ask for or store the user's MT5 trading password.
 - MT5 integration is read-only: no placing, modifying or closing trades.
 - Connector credentials are one-time displayed, hashed in the database and revocable.
+- The MT5 sync RPC is intentionally executable by the anon role only because the local device has no Supabase user session; every call must present its high-entropy device token, and the RPC validates the hash before writing. Supabase flags this SECURITY DEFINER pattern for manual review.
 - Local connector exports contain account identifiers and trading history; store them privately.
 - Scheduled synchronization depends on the user's Windows PC, MT5 terminal and internet connection being available.
