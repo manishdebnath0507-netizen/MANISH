@@ -164,9 +164,18 @@ def main() -> int:
     parser.add_argument("--output", default="ati-mt5-export.json", help="Output JSON file")
     parser.add_argument("--terminal-path", help="Optional path to terminal64.exe")
     parser.add_argument("--sync", action="store_true", help="Upload this read-only export to your enrolled AI Trading Intelligence account")
+    parser.add_argument("--state-file", default="ati-sync-state.json", help="Local timestamp checkpoint used for incremental sync")
     args = parser.parse_args()
 
     try:
+        state_path = Path(args.state_file).expanduser().resolve()
+        if args.sync and not args.from_date and state_path.exists():
+            try:
+                state = json.loads(state_path.read_text(encoding="utf-8"))
+                last_sync = datetime.fromisoformat(state["last_successful_sync"])
+                args.from_date = (last_sync - timedelta(days=2)).astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S")
+            except Exception:
+                print("Sync checkpoint unreadable; starting with full available history.", file=sys.stderr)
         payload = run(args)
         output = Path(args.output).expanduser().resolve()
         output.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
@@ -190,8 +199,13 @@ def main() -> int:
             except urllib.error.HTTPError as error:
                 detail = error.read().decode("utf-8", errors="replace")[:500]
                 raise RuntimeError(f"Cloud sync rejected ({error.code}): {detail}") from error
+            state_path.write_text(
+                json.dumps({"last_successful_sync": payload["history_range"]["to"]}, indent=2),
+                encoding="utf-8",
+            )
             print("Cloud sync complete:")
             print(json.dumps(result, indent=2))
+            print(f"Incremental sync checkpoint saved: {state_path}")
         return 0
     except Exception as exc:
         print(f"Connector error: {exc}", file=sys.stderr)
