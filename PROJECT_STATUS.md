@@ -3,35 +3,47 @@
 Last updated: 2026-11-06
 
 ## Completed
-- [x] Separate repository and Vercel projects (kept separate from ONE SPACE).
-- [x] Responsive dashboard prototype with journal, analytics, markets, events, backtesting, strategies and assistant sections.
-- [x] Dedicated Supabase project created in Mumbai region (ap-south-1).
-- [x] Initial 12-table database schema; RLS enabled on every table.
-- [x] Anonymous access revoked from public tables; authenticated access scoped by auth.uid().
-- [x] Cross-user ownership enforced by composite foreign keys between accounts, trades, deals, MT5 connections, sync runs, strategies and backtests.
-- [x] Supporting indexes added for the composite ownership foreign keys.
-- [x] Latest Supabase security advisor check: no findings.
-- [x] Authenticated frontend sign-up/sign-in gate and per-user trade journal wiring.
-- [x] FastAPI backend verifies Supabase user JWT and reads data through that user's RLS context (no service-role key).
-- [x] Frontend and backend production deployments reported READY by Vercel.
-- [x] Read-only Windows MT5 collector created: account snapshot, historical deals, open positions, UTC timestamps, commission, swap and fees.
-- [x] Connector design explicitly avoids collecting/storing MT5 passwords and contains no trade execution operations.
+- [x] Separate repository and Vercel projects, kept separate from ONE SPACE.
+- [x] Responsive trading workspace prototype with journal, analytics, markets, events, backtesting, strategies and assistant sections.
+- [x] Dedicated Supabase project in Mumbai (ap-south-1).
+- [x] Initial 12-table schema; RLS enabled on all 12 application tables.
+- [x] Anonymous direct table access revoked; authenticated rows scoped by auth.uid().
+- [x] Composite ownership constraints prevent cross-user account/trade/strategy/backtest references.
+- [x] Supabase security advisor check returned no findings.
+- [x] Supabase canonical schema snapshot and ownership-hardening migration documented.
+- [x] Authenticated frontend sign-up/sign-in and per-user trade journal wiring.
+- [x] FastAPI verifies Supabase user sessions and reads analytics under the user's RLS context.
+- [x] Frontend and backend production deployments previously reached READY.
+- [x] Windows MT5 collector reads an already-authenticated terminal; it does not collect/store broker passwords and has no trade execution calls.
+- [x] Read-only connector enrollment API creates a per-device credential; only its SHA-256 hash is stored.
+- [x] One-time connector enrollment UI added to Settings.
+- [x] Revocable connector credentials supported by authenticated revoke endpoint.
+- [x] Sync API validates a bounded read-only payload and calls a token-guarded database function; no service-role key is used.
+- [x] Database sync function records deals idempotently by broker deal ticket.
+- [x] Position reconciliation aggregates partial exits and includes profit, commission, swap and fees.
+- [x] Open positions retain mark-to-market price and floating P/L separately from realized P/L.
+- [x] MT5 netting reversal (INOUT) records are preserved but excluded from automatic grouping to avoid incorrect assumptions.
+- [x] Optional Windows Task Scheduler scripts added for 15-minute sync while user is signed in and MT5 is available.
 
-## Pending implementation and verification
-- [ ] Set Supabase Auth Site URL and allowed redirect URL to https://ai-trading-intelligence-one-space4.vercel.app (dashboard setting).
-- [ ] Test real sign-up, email confirmation, sign-in and sign-out end to end.
-- [ ] Test the Windows MT5 collector on a computer with an authenticated MT5 terminal.
-- [ ] Implement secure connector enrollment, revocable device tokens and authenticated upload endpoint.
-- [ ] Reconcile MT5 deal records into positions, including partial closes, corrections, fees, swaps and broker/server timezone handling.
-- [ ] Build calculated performance analytics from verified deal records and add weekday/month/time-of-day insights.
-- [ ] Integrate licensed market prices and economic calendar sources.
-- [ ] Build realistic backtesting with spread, commissions, slippage and no look-ahead bias.
-- [ ] Add AI analysis grounded in user trades and cited market/event sources.
-- [ ] Run full security, privacy, recovery and end-to-end tests.
+## Pending verification and development
+- [ ] Complete Vercel build checks for the newest frontend/backend commits.
+- [ ] Set Supabase Auth Site URL and redirect URL to https://ai-trading-intelligence-one-space4.vercel.app.
+- [ ] Test real account sign-up, email confirmation, sign-in and sign-out.
+- [ ] Enroll and test the connector on the user's Windows computer with MT5 open and signed in.
+- [ ] Validate reconciliation against broker-specific examples, including netting reversals, commission-only deals and partial closes.
+- [ ] Add UI to list all connected devices and revoke an existing connector after page refresh.
+- [ ] Add pagination/incremental sync checkpoints to reduce large full-history uploads.
+- [ ] Build detailed weekday, monthly, session, symbol and strategy analytics.
+- [ ] Integrate licensed market prices and economic calendar data.
+- [ ] Build realistic backtesting with bid/ask, spread, commission, slippage and no look-ahead bias.
+- [ ] Add AI analysis grounded in verified trades and cited market/event sources.
+- [ ] Complete security, privacy, recovery and end-to-end tests.
 
 ## Data safety
-- Demo rows and overview figures are fictional and are not evidence of trading performance.
+- Demo rows and prototype figures are fictional and are not evidence of trading performance.
 - The frontend contains only the Supabase publishable key. Never expose a Supabase secret/service-role key.
 - Never ask for or store the user's MT5 trading password.
 - MT5 integration is read-only: no placing, modifying or closing trades.
+- Connector credentials are one-time displayed, hashed in the database and revocable.
 - Local connector exports contain account identifiers and trading history; store them privately.
+- Scheduled synchronization depends on the user's Windows PC, MT5 terminal and internet connection being available.
