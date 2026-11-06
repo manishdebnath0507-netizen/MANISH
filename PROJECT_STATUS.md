@@ -26,9 +26,9 @@ Last updated: 2026-11-06
 - [x] Optional Windows Task Scheduler scripts added for 15-minute sync while user is signed in and MT5 is available.
 
 ## Pending verification and development
-- [ ] Complete Vercel build checks for the newest frontend/backend commits.
+- [x] Latest frontend and backend production deployments reached READY; backend build completed successfully.
 - [ ] Set Supabase Auth Site URL and redirect URL to https://ai-trading-intelligence-one-space4.vercel.app.
-- [ ] Test real account sign-up, email confirmation, sign-in and sign-out.
+- [ ] Test real account sign-up, email confirmation, sign-in and sign-out (requires the user's Supabase Auth URL setting and email confirmation).
 - [ ] Enroll and test the connector on the user's Windows computer with MT5 open and signed in.
 - [ ] Validate reconciliation against broker-specific examples, including netting reversals, commission-only deals and partial closes.
 - [ ] Add UI to list all connected devices and revoke an existing connector after page refresh.
