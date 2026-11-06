@@ -13,7 +13,7 @@ A private trading analytics and research platform. This is a separate product an
 
 ## Current deployment
 - Frontend: Vercel project `ai-trading-intelligence`, root directory `frontend`.
-- Database and Auth: dedicated Supabase project in Mumbai (`ap-south-1`).
+- Database and Auth: dedicated Supabase project in Mumbai (`ap-south-1`).\n- Backend: FastAPI on Vercel at https://ai-trading-intelligence-api.vercel.app (health, authenticated analytics summary and weekday/month breakdown).
 - Production domain: https://ai-trading-intelligence-one-space4.vercel.app
 - Git repository: https://github.com/manishdebnath0507-netizen/MANISH
 
